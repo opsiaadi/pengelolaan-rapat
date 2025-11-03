@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Pengelolaan Rapat</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-image: url("https://www.polibatam.ac.id/wp-content/uploads/2023/05/Gedung-1536x1024.jpg");
+
+    }
+
+    #dashboardPage {
+      padding: 0;
+      height: 100vh;
+    }
+    .card {
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .sidebar {
+      height: 100vh;
+      position: fixed;
+      width: 220px;
+      background-color: #0d6efd;
+      color: white;
+    }
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      display: block;
+      padding: 12px;
+      border-radius: 8px;
+    }
+    .sidebar a:hover {
+      background-color: rgba(255,255,255,0.2);
+    }
+    .content {
+      margin-left: 220px;
+      padding: 20px;
+    }
+
+  </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar p-3">
+      <h4 class="mb-4 text-center">Dashboard</h4>
+      <a href="#" id="menuDashboard">Ringkasan Rapat</a>
+      <a href="#" id="menuPengguna">Data Pengguna</a>
+      <a href="#" id="menuRapat">Data Rapat</a>
+      <a href="#" id="menuAbsensi">Data Absensi</a>
+      <br>
+      <button class="btn btn-danger w-100" id="logoutBtn">Logout</button>
+    </div>
+
+  <!-- Content -->
+  <div class="content">
+    <div id="sectionDashboard">
+      <h3 class="mb-3">Ringkasan Rapat</h3>
+      <div class="row">
+        <div class="col-md-4 mb-3">
+          <div class="card text-center p-3">
+            <h5>Total Pengguna</h5>
+            <h2 id="totalPengguna">0</h2>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card text-center p-3">
+            <h5>Total Rapat</h5>
+            <h2 id="totalRapat">0</h2>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card text-center p-3">
+            <h5>Rapat Selesai</h5>
+            <h2 id="rapatSelesai">0</h2>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card text-center p-3">
+            <h5>Peserta Hadir</h5>
+            <h2 id="pesertaHadir">0</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Pengguna -->
+     <div id="sectionPengguna" class="d-none">
+      <div class="d-flex justify-content-between align-items-center mb-3" style="border-bottom: 1px solid gray;">
+        <h3>Data Pengguna</h3>
+
+        <div class="mb-3">
+      <input type="text" id="searchInput" class="form-control me-2" placeholder="Cari data pengguna...">
+    </div>
+
+        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalPengguna">+ Tambah Pengguna</button>
+      </div>
+      <table class="table table-bordered">
+        <thead class="table-warning">
+          <tr>
+            <th>No</th>
+            <th>Nama Pengguna</th>
+            <th>Nik/Nim</th>
+            <th>Jabatan</th>
+            <th>No Hp</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="tabelPengguna"></tbody>
+      </table>
+    </div>
+
+
+    <!-- Data Rapat -->
+    <div id="sectionRapat" class="d-none">
+      <div class="d-flex justify-content-between align-items-center mb-3" style="border-bottom: 1px solid gray;">
+        <h3>Data Rapat</h3>
+
+        <div class="mb-3">
+      <input type="text" id="searchInput" class="form-control me-2" placeholder="Cari data rapat ...">
+    </div>
+
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalRapat">+ Tambah Rapat</button>
+      </div>
+      <table class="table table-bordered">
+        <thead class="table-primary">
+          <tr>
+            <th>No</th>
+            <th>Judul Rapat</th>
+            <th>Tanggal</th>
+            <th>Waktu</th>
+            <th>Ruangan</th>
+            <th>Pimpinan Rapat</th>
+            <th>Peserta Rapat</th>
+            <th>Status</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="tabelRapat"></tbody>
+      </table>
+    </div>
+
+    <!-- Data Absensi -->
+    <div id="sectionAbsensi" class="d-none">
+      <div class="d-flex justify-content-between align-items-center mb-3" style="border-bottom: 1px solid grey;">
+        <h3>Data Absensi</h3>
+
+           <div class="mb-3">
+      <input type="text" id="searchInput" class="form-control me-2" placeholder="Cari data rapat ...">
+    </div>
+
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAbsensi">+ Tambah Absensi</button>
+      </div>
+      <table class="table table-bordered">
+        <thead class="table-success">
+          <tr>
+            <th>No</th>
+            <th>Tanggal</th>
+            <th>Nama Peserta</th>
+            <th>Nim</th>
+            <th>Rapat</th>
+            <th>Waktu</th>
+            <th>Status Kehadiran</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="tabelAbsensi"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Tambah Pengguna -->
+
+  <div class="modal fade" id="modalPengguna" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-warning text-white">
+          <h5 class="modal-title">Tambah Pengguna</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formPengguna">
+            <input type="hidden" id="indexPengguna">
+            <div class="mb-3">
+              <label>Nama Pengguna</label>
+              <input type="text" id="namaPengguna" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label>Nik/Nim</label>
+              <input type="number" id="nikNim" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label>Jabatan</label>
+              <select id="statusPengguna" class="form-select">
+                <option>-</option>
+                <option>Dosen</option>
+                <option>Mahasiswa</option>
+                <option>Rektor</option>
+                <option>Kaprodi</option>
+                <option>Dekan</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label>No Hp</label>
+              <input type="number" id="noHp" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label>Email</label>
+              <input type="email" id="emailPengguna" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label>Role</label>
+              <select id="role" class="form-select">
+                <option>Admin</option>
+                <option>Peserta Rapat</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-warning w-100">Simpan</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Tambah Rapat -->
+  <div class="modal fade" id="modalRapat" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">Tambah Rapat</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formRapat">
+            <input type="hidden" id="indexRapat">
+            <div class="mb-3">
+              <label>Judul Rapat</label>
+              <input type="text" id="judulRapat" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label>Tanggal</label>
+              <input type="date" id="tanggalRapat" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label>Waktu</label>
+              <input type="time" id="waktuRapat" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label>Ruangan</label>
+              <select id="ruangRapat" class="form-select">
+                <option>-</option>
+                <option>Auditorium</option>
+                <option>Gedung Tecno</option>
+                <option>Gedung Utama</option>
+                <option>GU705</option>
+                <option>GU702</option>
+                <option>Gedung TA10</option>
+                <option>Gedung TA05</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label>Pimpinan Rapat</label>
+              <select id="pimpinanRapat" class="form-select">
+                <option>-</option>
+                <option>ketua Jurusan</option>
+                <option>Ketua BEM</option>
+                <option>Rektor</option>
+                <option>Kaprodi</option>
+                <option>Dekan</option>
+                <option>Dosen PA</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label>Peserta Rapat</label>
+              <select id="pesertaRapat" class="form-select">
+                <option>-</option>
+                <option>Mahasiswa jurusan Teknik Informatika</option>
+                <option>Mahasiswa jurusan Manejemen Bisnis</option>
+                <option>Mahasiswa jurusan Elektro</option>
+                <option>Mahasiswa jurusan Mesin</option>
+                <option>Anggota BEM</option>
+                <option>Anggota BPH</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label>Status</label>
+              <select id="statusRapat" class="form-select">
+                <option>Belum Selesai</option>
+                <option>Selesai</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Simpan</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Tambah Absensi -->
+  <div class="modal fade" id="modalAbsensi" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title">Tambah Absensi</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="formAbsensi">
+            <input type="hidden" id="indexAbsensi">
+            <div class="mb-3">
+              <label>Tanggal</label>
+              <input type="date" id="tanggalPeserta" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label>Nama Peserta</label>
+              <input type="text" id="namaPeserta" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label>Nim</label>
+              <input type="number" id="nimPeserta" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label>Rapat</label>
+              <input type="text" id="rapatPeserta" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label>Waktu</label>
+              <input type="time" id="waktuPeserta" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label>Status Kehadiran</label>
+              <select id="statusKehadiran" class="form-select">
+                <option>Hadir</option>
+                <option>Tidak Hadir</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-success w-100">Simpan</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // --- DATA SIMPANAN SEMENTARA (localStorage)
+    let penggunaList = JSON.parse(localStorage.getItem('penggunaList')) || [];
+    let rapatList = JSON.parse(localStorage.getItem('rapatList')) || [];
+    let absensiList = JSON.parse(localStorage.getItem('absensiList')) || [];
+
+    // --- NAVIGASI MENU
+    const menuDashboard = document.getElementById('menuDashboard');
+    const menuPengguna = document.getElementById('menuPengguna');
+    const menuRapat = document.getElementById('menuRapat');
+    const menuAbsensi = document.getElementById('menuAbsensi');
+    const sectionDashboard = document.getElementById('sectionDashboard');
+    const sectionPengguna = document.getElementById('sectionPengguna');
+    const sectionRapat = document.getElementById('sectionRapat');
+    const sectionAbsensi = document.getElementById('sectionAbsensi');
+
+    menuDashboard.onclick = () => showSection('dashboard');
+    menuPengguna.onclick = () => showSection('pengguna');
+    menuRapat.onclick = () => showSection('rapat');
+    menuAbsensi.onclick = () => showSection('absensi');
+
+    function showSection(section) {
+      sectionDashboard.classList.add('d-none');
+      sectionPengguna.classList.add('d-none');
+      sectionRapat.classList.add('d-none');
+      sectionAbsensi.classList.add('d-none');
+      if (section === 'dashboard') sectionDashboard.classList.remove('d-none');
+      if (section === 'pengguna') sectionPengguna.classList.remove('d-none');
+      if (section === 'rapat') sectionRapat.classList.remove('d-none');
+      if (section === 'absensi') sectionAbsensi.classList.remove('d-none');
+    }
+
+    // --- TAMPILKAN DATA PENGGUNA
+       function renderPengguna() {
+      const tabel = document.getElementById('tabelPengguna');
+      tabel.innerHTML = '';
+      penggunaList.forEach((r, i) => {
+        tabel.innerHTML += `
+          <tr>
+            <td>${i + 1}</td>
+            <td>${r.nama}</td>
+            <td>${r.niknim}</td>
+            <td>${r.jabatan}</td>
+            <td>${r.nohp}</td>
+            <td>${r.email}</td>
+            <td>${r.role}</td>
+            <td>
+              <button class="btn btn-warning btn-sm" style="margin : 10px 0;" onclick="editPengguna(${i})">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="hapusPengguna(${i})">Hapus</button>
+            </td>
+          </tr>`;
+      });
+      localStorage.setItem('penggunaList', JSON.stringify(penggunaList));
+      updateDashboard();
+    }
+    // --- SIMPAN PENGGUNA
+    document.getElementById('formPengguna').onsubmit = (e) => {
+      e.preventDefault();
+      const nama = document.getElementById('namaPengguna').value;
+      const niknim = document.getElementById('nikNim').value;
+      const jabatan = document.getElementById('statusPengguna').value;
+      const nohp = document.getElementById('noHp').value;
+      const email = document.getElementById('emailPengguna').value;
+      const role = document.getElementById('role').value;
+      const index = document.getElementById('indexPengguna').value;
+      if (index === '') penggunaList.push({ nama, niknim, jabatan, nohp, email, role });
+      else penggunaList[index] = { nama, niknim, jabatan, nohp, email, role };
+      localStorage.setItem('penggunaList', JSON.stringify(penggunaList));
+      document.getElementById('formPengguna').reset();
+      renderPengguna();
+      bootstrap.Modal.getInstance(document.getElementById('modalPengguna')).hide();
+    }
+
+    function editPengguna(i) {
+      const r = penggunaList[i];
+      document.getElementById('indexPengguna').value = i;
+      document.getElementById('namaPengguna').value = r.nama;
+      document.getElementById('nikNim').value = r.niknim;
+      document.getElementById('statusPengguna').value = r.jabatan;
+      document.getElementById('noHp').value = r.nohp;
+      document.getElementById('emailPengguna').value = r.email;
+      document.getElementById('role').value = r.role;
+      new bootstrap.Modal(document.getElementById('modalPengguna')).show();
+    }
+
+    function hapusPengguna(i) {
+      if (confirm('Hapus data pengguna ini?')) {
+      penggunaList.splice(i, 1);
+        renderPengguna();
+      }
+    }
+
+
+
+    // --- TAMPILKAN DATA RAPAT
+    function renderRapat() {
+      const tabel = document.getElementById('tabelRapat');
+      tabel.innerHTML = '';
+      rapatList.forEach((r, i) => {
+        tabel.innerHTML += `
+          <tr>
+            <td>${i + 1}</td>
+            <td>${r.judul}</td>
+            <td>${r.tanggal}</td>
+            <td>${r.waktu}</td>
+            <td>${r.ruang}</td>
+            <td>${r.pimpinan}</td>
+            <td>${r.peserta}</td>
+            <td>${r.status}</td>
+            <td>
+              <button class="btn btn-warning btn-sm" onclick="editRapat(${i})">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="hapusRapat(${i})">Hapus</button>
+            </td>
+          </tr>`;
+      });
+      localStorage.setItem('rapatList', JSON.stringify(rapatList));
+      updateDashboard();
+    }
+
+    // --- SIMPAN RAPAT
+    document.getElementById('formRapat').onsubmit = (e) => {
+      e.preventDefault();
+      const judul = document.getElementById('judulRapat').value;
+      const tanggal = document.getElementById('tanggalRapat').value;
+      const waktu = document.getElementById('waktuRapat').value;
+      const ruang = document.getElementById('ruangRapat').value;
+      const pimpinan = document.getElementById('pimpinanRapat').value;
+      const peserta = document.getElementById('pesertaRapat').value;
+      const status = document.getElementById('statusRapat').value;
+      const index = document.getElementById('indexRapat').value;
+      if (index === '') rapatList.push({ judul, tanggal, waktu, ruang, pimpinan, peserta, status });
+      else rapatList[index] = { judul, tanggal, waktu, ruang, pimpinan, peserta, status };
+      localStorage.setItem('rapatList', JSON.stringify(rapatList));
+      document.getElementById('formRapat').reset();
+      renderRapat();
+      bootstrap.Modal.getInstance(document.getElementById('modalRapat')).hide();
+    }
+
+    function editRapat(i) {
+      const r = rapatList[i];
+      document.getElementById('indexRapat').value = i;
+      document.getElementById('judulRapat').value = r.judul;
+      document.getElementById('tanggalRapat').value = r.tanggal;
+      document.getElementById('waktuRapat').value = r.waktu;
+      document.getElementById('ruangRapat').value = r.ruang;
+      document.getElementById('pimpinanRapat').value = r.pimpinan;
+      document.getElementById('pesertaRapat').value = r.peserta;
+      document.getElementById('statusRapat').value = r.status;
+      new bootstrap.Modal(document.getElementById('modalRapat')).show();
+    }
+
+    function hapusRapat(i) {
+      if (confirm('Hapus rapat ini?')) {
+        rapatList.splice(i, 1);
+        renderRapat();
+      }
+    }
+
+    // --- TAMPILKAN ABSENSI
+    function renderAbsensi() {
+      const tabel = document.getElementById('tabelAbsensi');
+      tabel.innerHTML = '';
+      absensiList.forEach((a, i) => {
+        tabel.innerHTML += `
+          <tr>
+            <td>${i + 1}</td>
+            <td>${a.tanggal}</td>
+            <td>${a.nama}</td>
+            <td>${a.nim}</td>
+            <td>${a.rapat}</td>
+            <td>${a.waktu}</td>
+            <td>${a.status}</td>
+            <td>
+              <button class="btn btn-warning btn-sm" onclick="editAbsensi(${i})">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="hapusAbsensi(${i})">Hapus</button>
+            </td>
+          </tr>`;
+      });
+      localStorage.setItem('absensiList', JSON.stringify(absensiList));
+      updateDashboard();
+    }
+
+    // --- SIMPAN ABSENSI
+    document.getElementById('formAbsensi').onsubmit = (e) => {
+      e.preventDefault();
+      const tanggal = document.getElementById('tanggalPeserta').value;
+      const nama = document.getElementById('namaPeserta').value;
+      const nim = document.getElementById('nimPeserta').value;
+      const rapat = document.getElementById('rapatPeserta').value;
+      const waktu = document.getElementById('waktuPeserta').value;
+      const status = document.getElementById('statusKehadiran').value;
+      const index = document.getElementById('indexAbsensi').value;
+      if (index === '') absensiList.push({ tanggal, nama, nim, rapat, waktu, status });
+      else absensiList[index] = { tanggal, nama, nim, rapat, waktu, status };
+      localStorage.setItem('absensiList', JSON.stringify(absensiList));
+      document.getElementById('formAbsensi').reset();
+      renderAbsensi();
+      bootstrap.Modal.getInstance(document.getElementById('modalAbsensi')).hide();
+    }
+
+    function editAbsensi(i) {
+      const a = absensiList[i];
+      document.getElementById('indexAbsensi').value = i;
+      document.getElementById('tanggalPeserta').value = a.tanggal;
+      document.getElementById('namaPeserta').value = a.nama;
+      document.getElementById('nimPeserta').value = a.nim;
+      document.getElementById('rapatPeserta').value = a.rapat;
+      document.getElementById('waktuPeserta').value = a.waktu;
+      document.getElementById('statusKehadiran').value = a.status;
+      new bootstrap.Modal(document.getElementById('modalAbsensi')).show();
+    }
+
+    function hapusAbsensi(i) {
+      if (confirm('Hapus peserta ini?')) {
+        absensiList.splice(i, 1);
+        renderAbsensi();
+      }
+    }
+
+    // --- UPDATE DASHBOARD
+    function updateDashboard() {
+      document.getElementById('totalPengguna').textContent = penggunaList.length;
+      document.getElementById('totalRapat').textContent = rapatList.length;
+      document.getElementById('rapatSelesai').textContent = rapatList.filter(r => r.status === 'Selesai').length;
+      document.getElementById('pesertaHadir').textContent = absensiList.filter(a => a.status === 'Hadir').length;
+    }
+
+    // --- INISIALISASI
+    renderPengguna();
+    renderRapat();
+    renderAbsensi();
+    updateDashboard();
+
+    document.getElementById("logoutBtn").addEventListener("click", function() {
+      localStorage.clear();
+      window.location.href = "loginForm.html";
+    });
+  </script>
+
+</body>
+</html>
