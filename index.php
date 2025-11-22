@@ -1,3 +1,7 @@
+<?php
+session_start();
+include "koneksi.php";
+?>
 <!DOCTYPE html>
 <html lang="id">
   <head>
@@ -16,6 +20,46 @@
     class="bg-light"
     style="background: linear-gradient(rgb(8, 124, 170), rgb(112, 255, 172))"
   >
+  <?php
+  if(isset($_POST['username'])) {
+    $username = $_POST['username'];
+    $password = md5($_POST['password']);
+    $role = $_POST['role'];
+
+    $query = mysqli_query($koneksi, "SELECT * FROM user where username='$username' and password='$password'
+    and role='$role'");
+
+    if(mysqli_num_rows($query) > 0){
+      $data = mysqli_fetch_array($query);
+      $_SESSION['user'] = $data;
+
+      $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+      $agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+      $status = 'sukses';
+
+      $ins = $koneksi->prepare("INSERT INTO riwayat_login (username, role, status, ip_address, user_agent) VALUES (?, ?, ?, ?, ?)");
+    if ($ins) {
+        $ins->bind_param('sssss', $username, $role, $status, $ip, $agent);
+        $ins->execute();
+        $ins->close();
+    }
+      echo '<script>alert("login Berhasil"); location.href="dashboard2.html";</script>';
+      exit;
+    } else {
+      $ip = $_SERVER['REMOTE_ADDR'] ?? '';
+      $agent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+      $status = 'gagal';
+
+      $ins = $koneksi->prepare("INSERT INTO riwayat_login (username, role, status, ip_address, user_agent) VALUES (?, ?, ?, ?, ?)");
+    if ($ins) {
+        $ins->bind_param('sssss', $username, $role, $status, $ip, $agent);
+        $ins->execute();
+        $ins->close();
+    }
+      echo '<script>alert("Username/Password/Role Tidak Sesuai");</script>';
+      }
+    }
+  ?>
     <div
       class="container min-vh-100 d-flex justify-content-center align-items-center"
       id="loginPage"
@@ -42,12 +86,13 @@
               <h5 class="text-center mb-4 fw-semibold">
                 Sistem Manajemen Rapat
               </h5>
-              <form id="loginForm">
+              <form method="POST" id="loginForm">
                 <div class="mb-3">
                   <label class="form-label">Username</label>
                   <input
                     type="text"
                     id="username"
+                    name="username"
                     class="form-control"
                     placeholder="Masukkan username"
                     required
@@ -58,6 +103,7 @@
                   <input
                     type="password"
                     id="password"
+                    name="password"
                     class="form-control"
                     placeholder="Masukkan password"
                     required
@@ -66,7 +112,7 @@
 
                 <div class="mb-3">
                   <label class="form-label">Login Sebagai</label>
-                  <select id="role" class="form-select" required>
+                  <select id="role" name="role" class="form-select" required>
                     <option value="">Pilih peran</option>
                     <option value="admin">Admin</option>
                     <option value="peserta">Peserta</option>
@@ -84,36 +130,20 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-      document
-        .getElementById("loginForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-
-          const username = document.getElementById("username").value.trim();
-          const password = document.getElementById("password").value.trim();
-          const role = document.getElementById("role").value;
-
-          // Contoh validasi login sederhana
-          const validAdmin =
-            username !== "" && password === "ROLEadmin123" && role === "admin";
-          const validUser =
-            username !== "" &&
-            password === "ROLEpeserta123" &&
-            role === "peserta";
-
-          if (validAdmin || validUser) {
-            alert("Login berhasil sebagai " + role + "!");
-            // Simpan status ke localStorage
-            localStorage.setItem("isLoggedIn", "true");
-            localStorage.setItem("username", username);
-            localStorage.setItem("role", role);
-
-            // Arahkan ke dashboard
-            window.location.href = "dashboard2.html";
-          } else {
-            alert("Username, password, atau peran salah!");
-          }
-        });
+    document
+    .getElementById("loginForm")
+    .addEventListener("submit", function (e) {
+      
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const role = document.getElementById("role").value;
+      
+      if (username === "" || password === "" || role === "") {
+        e.preventDefault()
+        alert("Form tidak boleh kosong!");
+      }
+      // Jika semua terisi → form akan submit ke PHP (tidak ada preventDefault)
+      });
     </script>
   </body>
 </html>
